@@ -1,12 +1,12 @@
 import React from "react";
-import "./name-list.css";
 
 import Name from "../Name/Name.js";
+import "./name-list.css";
 
 function NameList(props) {
   return (
     <div className="name-list">
-      <Name />
+      {props.names.map((data, index) => <Name key={index} name={data.name} />)}
     </div>
   );
 }
