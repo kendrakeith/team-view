@@ -1,18 +1,39 @@
 import React, { Component } from "react";
+import axios from "axios";
 
 import NameList from "./components/NameList/NameList.js";
 
-const names = [
-  { name: "First Last 1" },
-  { name: "First Last 2" },
-  { name: "First Last 3" }
-];
-
 class App extends Component {
+  state = {
+    names: []
+  };
+
+  componentDidMount() {
+    axios
+      .get("https://h93rvy36y7.execute-api.us-east-1.amazonaws.com/teams")
+      .then(response => {
+        console.log(response);
+
+        const newNames = response.data.map(data => {
+          return {
+            name: data.name
+          };
+        });
+        console.log(newNames);
+
+        const newState = Object.assign({}, this.state, {
+          names: newNames
+        });
+
+        this.setState(newState);
+      })
+      .catch(error => console.log(error));
+  }
+
   render() {
     return (
       <div className="App">
-        <NameList names={names} />
+        <NameList names={this.state.names} />
       </div>
     );
   }
