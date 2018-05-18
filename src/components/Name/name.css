@@ -8,6 +8,7 @@
   color: #6a6a6a;
   font-family: sans-serif;
   display: inline-block;
+  transition: transform 500ms;
 }
 
 .name span:hover {
