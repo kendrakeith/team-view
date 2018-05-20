@@ -9,49 +9,46 @@ class App extends Component {
   };
 
   componentDidMount() {
+    var onlyVirginia = team => team.state === "VA";
+    var reduceTeamsToMembers = function(teamMembers, data) {
+      data.members.forEach(member => {
+        teamMembers.push(member);
+      });
+      return teamMembers;
+    };
+    var onlyEngineersAndTechLeads = member =>
+      member.role === "Software Engineer" || member.role === "Technical Lead";
+    var byLastThenFirst = function(a, b) {
+      if (a.lastName > b.lastName) {
+        return 1;
+      } else if (a.lastName < b.lastName) {
+        return -1;
+      }
+      if (a.firstName > b.firstName) {
+        return 1;
+      } else if (a.firstName < b.firstName) {
+        return -1;
+      } else {
+        return 0;
+      }
+    };
+    var combineFirstAndLastName = member =>
+      JSON.parse(
+        '{"name": "' + member.firstName + " " + member.lastName + '" }'
+      );
+
     axios
       .get("https://h93rvy36y7.execute-api.us-east-1.amazonaws.com/teams")
       .then(response => {
-        //Filter by state
-        var stateFilter = response.data.filter(data => data.state === "VA");
+        let memberNames = response.data
+          .filter(onlyVirginia)
+          .reduce(reduceTeamsToMembers, [])
+          .filter(onlyEngineersAndTechLeads)
+          .sort(byLastThenFirst)
+          .map(combineFirstAndLastName);
 
-        //Filter by role
-        var roleFilter = [];
-        for (var i = 0; i < stateFilter.length; i++) {
-          roleFilter.push(
-            stateFilter[i].members.filter(
-              members => members.role === "Software Engineer"
-            )
-          );
-        }
-        var flatArray = [].concat.apply([], roleFilter);
-
-        //Sort by last then first name
-        function firstCompare(a, b) {
-          if (a.firstName < b.firstName) return -1;
-          if (a.firstName > b.firstName) return 1;
-          return 0;
-        }
-        flatArray.sort(firstCompare);
-
-        function lastCompare(a, b) {
-          if (a.lastName < b.lastName) return -1;
-          if (a.lastName > b.lastName) return 1;
-          return 0;
-        }
-        flatArray.sort(lastCompare);
-
-        //Concat first and last names
-        var fullNames = [];
-        for (var j = 0; j < flatArray.length; j++) {
-          fullNames.push({
-            name: flatArray[j].firstName + " " + flatArray[j].lastName
-          });
-        }
-
-        //Set state
         const newState = Object.assign({}, this.state, {
-          names: fullNames
+          names: memberNames
         });
 
         this.setState(newState);
