@@ -25,6 +25,14 @@ npm start
 
 Navigate to [http://localhost:3000/](http://localhost:3000/)
 
+## Unit Tests
+
+Unit tests have been built using the Jest testing framework. To launch the test runner:
+
+```
+npm test
+```
+
 ### Prerequisites
 
 This was developed using:
@@ -35,7 +43,8 @@ A minimum of node v6 is recommended.
 
 ## Built With
 
-* [React](https://github.com/facebook/react) - Javascript web framework
+* [React](https://github.com/facebook/react) - JavaScript web framework
 * [Create React App](https://github.com/facebook/create-react-app) - Bootstrap React build configuration
 * [Prettier](https://github.com/prettier/prettier) - Opinionated code formatter
 * [Axios](https://github.com/axios/axios) - Promise based HTTP client
+* [Jest](https://github.com/facebook/jest) - JavaScript testing framework
